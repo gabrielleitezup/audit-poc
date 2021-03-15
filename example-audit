@@ -1,0 +1,8 @@
+ID := 6cb23f52-9295-4ac4-9780-84792b55b223                                          // Id gerado por aquela transação
+USERNAME := gabrielleite                                                            // Autor da transação
+TABLE_NAME := workspace                                                             // Tabela alterada
+OPERATION := INSERT                                                                 // Operação realizada na Tabela
+CURRENT_STATE := {"id": "d33c4210-bb01-4535-aacf-7f8a1bc8f60a", "name": "Work 1"}   // Estado atual do objeto alterado
+USER_IP_ADDR := 192.168.0.0                                                         // IP de origem da Requisição
+USER_AGENT := Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36                    // Navegador Utilizado
+CREATED_AT := "Mon, 15 Mar 2021 12:53:24 GMT"                                       // Data da requisição
