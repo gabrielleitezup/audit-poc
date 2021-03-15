@@ -2,8 +2,9 @@ package main
 
 import (
 	"audit-poc/internal/configuration"
-	"audit-poc/internal/usergroup"
-	"audit-poc/internal/workspace"
+	"audit-poc/internal/userworkspace"
+	"audit-poc/internal/userworkspace/usergroup"
+	"audit-poc/internal/userworkspace/workspace"
 	"audit-poc/web"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -33,12 +34,13 @@ func main() {
 
 	workspaceMain := workspace.NewMain(db)
 	userGroupMain := usergroup.NewMain(db)
-	r := CreateRouter(workspaceMain, userGroupMain)
+	userWorkspaceMain := userworkspace.NewMain(db)
+	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain)
 
 	Start(r)
 }
 
-func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.ServiceMethods) *mux.Router {
+func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.ServiceMethods, userworkspace userworkspace.ServiceMethods) *mux.Router {
 	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
 	{
 		r.HandleFunc("/", web.HomeHandler).Methods("GET")
@@ -51,6 +53,10 @@ func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.Servic
 		r.HandleFunc("/user-groups/{groupId}", web.UpdateUserGroupHandler(usergroup)).Methods("PATCH")
 		r.HandleFunc("/user-groups/{groupId}", web.DeleteUserGroupHandler(usergroup)).Methods("DELETE")
 	}
+	{
+		r.HandleFunc("/workspaces/{workspaceId}/user-groups", web.SaveUserWorkspaceHandler(userworkspace)).Methods("POST")
+	}
+
 	return r
 }
 

@@ -56,6 +56,7 @@ CREATE TABLE USER_GROUP_WORKSPACES
     id            varchar(36) PRIMARY KEY,
     user_group_id varchar(36) NOT NULL,
     workspace_id  varchar(36) NOT NULL,
+    permission    jsonb       NOT NULL,
     deleted_at    timestamp,
     CONSTRAINT fk_user_group_workspace_group FOREIGN KEY (user_group_id) REFERENCES USER_GROUPS (ID),
     CONSTRAINT fk_workspace_group_user_group FOREIGN KEY (workspace_id) REFERENCES WORKSPACES (ID)
