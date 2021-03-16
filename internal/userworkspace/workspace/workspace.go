@@ -11,9 +11,9 @@ import (
 )
 
 type Workspace struct {
-	Id         uuid.UUID  `json:"id"`
-	Name       string     `json:"name"`
-	MatcherUrl string     `json:"matcher_url"`
+	Id         uuid.UUID      `json:"id"`
+	Name       string         `json:"name"`
+	MatcherUrl string         `json:"matcher_url"`
 	DeletedAt  gorm.DeletedAt `json:"-"`
 }
 
@@ -78,4 +78,3 @@ func (main Main) DeleteWorkspace(ctx context.Context, workspaceId uuid.UUID) (Re
 
 	return Response{Id: entity.Id, Name: entity.Name}, nil
 }
-
