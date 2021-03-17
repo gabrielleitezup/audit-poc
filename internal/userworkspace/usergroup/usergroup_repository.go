@@ -19,15 +19,15 @@ type ServiceMethods interface {
 	DeleteUserGroup(ctx context.Context, workspaceId uuid.UUID) (payloads.Response, error)
 }
 
-type Main struct {
+type UserGroupRepository struct {
 	db *gorm.DB
 }
 
 func NewMain(db *gorm.DB) ServiceMethods {
-	return Main{db}
+	return UserGroupRepository{db}
 }
 
-func (main Main) ParseUserGroup(entity io.ReadCloser) (payloads.Request, error) {
+func (main UserGroupRepository) ParseUserGroup(entity io.ReadCloser) (payloads.Request, error) {
 	var newSubs *payloads.Request
 
 	err := json.NewDecoder(entity).Decode(&newSubs)
@@ -38,52 +38,40 @@ func (main Main) ParseUserGroup(entity io.ReadCloser) (payloads.Request, error) 
 	return *newSubs, nil
 }
 
-func (main Main) SaveUserGroup(ctx context.Context, request payloads.Request) (payloads.Response, error) {
+func (main UserGroupRepository) SaveUserGroup(ctx context.Context, request payloads.Request) (payloads.Response, error) {
 	entity := models.UserGroup{
 		Id:   uuid.New(),
 		Name: request.Name,
 	}
 
-	res := main.db.WithContext(ctx).Model(&models.UserGroup{}).Create(&entity)
-	if res.Error != nil {
-		logrus.Errorln("Save Workspace error:", res.Error)
-		return payloads.Response{}, res.Error
+	err := main.SaveWithContext(ctx, entity)
+	if err != nil {
+		logrus.Errorln("Save UserGroup error:", err)
+		return payloads.Response{}, err
 	}
 
 	return payloads.Response{Id: entity.Id, Name: entity.Name}, nil
 }
 
-func (main Main) UpdateUserGroup(ctx context.Context, request payloads.Request, workspaceId uuid.UUID) (payloads.Response, error) {
+func (main UserGroupRepository) UpdateUserGroup(ctx context.Context, request payloads.Request, userGroupId uuid.UUID) (payloads.Response, error) {
 	var entity = models.UserGroup{}
 
-	res := main.db.WithContext(ctx).Model(&models.UserGroup{}).First(&entity, workspaceId)
-	if res.Error != nil {
-		logrus.Errorln("Update UserGroup error:", res.Error)
-		return payloads.Response{}, res.Error
+	res, err := main.UpdateWithContext(ctx, entity, request, userGroupId)
+	if err != nil {
+		logrus.Errorln("Update UserGroup error:", err)
+		return payloads.Response{}, err
 	}
 
-	resUp := main.db.WithContext(ctx).Model(&entity).Update("name", request.Name).Scan(&entity)
-	if resUp.Error != nil {
-		logrus.Errorln("Update UserGroup error:", res.Error)
-		return payloads.Response{}, res.Error
-	}
-
-	return payloads.Response{Id: entity.Id, Name: entity.Name}, nil
+	return payloads.Response{Id: res.Id, Name: res.Name}, nil
 }
 
-func (main Main) DeleteUserGroup(ctx context.Context, workspaceId uuid.UUID) (payloads.Response, error) {
+func (main UserGroupRepository) DeleteUserGroup(ctx context.Context, userGroupId uuid.UUID) (payloads.Response, error) {
 	var entity = models.UserGroup{}
 
-	res := main.db.WithContext(ctx).Model(&models.UserGroup{}).First(&entity, workspaceId)
-	if res.Error != nil {
-		logrus.Errorln("Delete UserGroup error:", res.Error)
-		return payloads.Response{}, res.Error
-	}
-
-	resDel := main.db.WithContext(ctx).Model(&models.UserGroup{}).Delete(&entity)
-	if resDel.Error != nil {
-		logrus.Errorln("Delete UserGroup error:", resDel.Error)
-		return payloads.Response{}, resDel.Error
+	err := main.DeleteWithContext(ctx, entity, userGroupId)
+	if err != nil {
+		logrus.Errorln("Delete UserGroup error:", err)
+		return payloads.Response{}, err
 	}
 
 	return payloads.Response{Id: entity.Id, Name: entity.Name}, nil

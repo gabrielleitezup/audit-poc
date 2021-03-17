@@ -1,4 +1,4 @@
-package userworkspace
+package payloads
 
 import (
 	"encoding/json"
