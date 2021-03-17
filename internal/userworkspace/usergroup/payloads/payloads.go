@@ -1,4 +1,4 @@
-package usergroup
+package payloads
 
 import "github.com/google/uuid"
 

@@ -2,7 +2,7 @@ package web
 
 import (
 	"audit-poc/internal/userworkspace"
-	"audit-poc/web/util"
+	"audit-poc/web/restutil"
 	"context"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -19,22 +19,22 @@ func SaveUserWorkspaceHandler(methods userworkspace.ServiceMethods) func(w http.
 		params := mux.Vars(r)
 		workspaceId, err := uuid.Parse(params["workspaceId"])
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		request, err := methods.ParseUserWorkspace(r.Body)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		response, err := methods.AssociateUserGroupToWorkspace(ctxRemoteAddress, request, workspaceId)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		util.NewResponse(w, http.StatusCreated, response)
+		restutil.NewResponse(w, http.StatusCreated, response)
 	}
 }

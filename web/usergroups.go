@@ -2,7 +2,7 @@ package web
 
 import (
 	"audit-poc/internal/userworkspace/usergroup"
-	"audit-poc/web/util"
+	"audit-poc/web/restutil"
 	"context"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -18,17 +18,17 @@ func SaveUserGroupHandler(methods usergroup.ServiceMethods) func(w http.Response
 
 		request, err := methods.ParseUserGroup(r.Body)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		response, err := methods.SaveUserGroup(ctxRemoteAddress, request)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		util.NewResponse(w, http.StatusCreated, response)
+		restutil.NewResponse(w, http.StatusCreated, response)
 	}
 }
 
@@ -38,7 +38,7 @@ func UpdateUserGroupHandler(methods usergroup.ServiceMethods) func(w http.Respon
 		params := mux.Vars(r)
 		groupId, err := uuid.Parse(params["groupId"])
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
@@ -48,17 +48,17 @@ func UpdateUserGroupHandler(methods usergroup.ServiceMethods) func(w http.Respon
 
 		request, err := methods.ParseUserGroup(r.Body)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		response, err := methods.UpdateUserGroup(ctxRemoteAddress, request, groupId)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		util.NewResponse(w, http.StatusOK, response)
+		restutil.NewResponse(w, http.StatusOK, response)
 	}
 }
 
@@ -68,7 +68,7 @@ func DeleteUserGroupHandler(methods usergroup.ServiceMethods) func(w http.Respon
 		params := mux.Vars(r)
 		groupId, err := uuid.Parse(params["groupId"])
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
@@ -79,10 +79,10 @@ func DeleteUserGroupHandler(methods usergroup.ServiceMethods) func(w http.Respon
 
 		response, err := methods.DeleteUserGroup(ctxRemoteAddress, groupId)
 		if err != nil {
-			util.NewResponse(w, http.StatusInternalServerError, err)
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		util.NewResponse(w, http.StatusOK, response)
+		restutil.NewResponse(w, http.StatusOK, response)
 	}
 }
