@@ -20,6 +20,10 @@ type MemberRepository struct {
 	db *gorm.DB
 }
 
+func NewMain(db *gorm.DB) ServiceMethods {
+	return MemberRepository{db}
+}
+
 func (main MemberRepository) ParseMember(entity io.ReadCloser) (payloads.Request, error) {
 	var newSubs *payloads.Request
 
@@ -48,8 +52,4 @@ func (main MemberRepository) AssociateMemberToUserGroup(ctx context.Context, req
 		Username:    entity.Username,
 		UserGroupId: entity.UserGroupId,
 	}, nil
-}
-
-func NewMain(db *gorm.DB) ServiceMethods {
-	return MemberRepository{db}
 }

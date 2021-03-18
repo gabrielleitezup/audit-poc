@@ -1,7 +1,7 @@
 package web
 
 import (
-	"audit-poc/internal/userworkspace/workspace"
+	"audit-poc/internal/workspace"
 	"audit-poc/util"
 	"audit-poc/web/restutil"
 	"github.com/google/uuid"

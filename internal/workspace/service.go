@@ -1,8 +1,8 @@
 package workspace
 
 import (
-	"audit-poc/internal/userworkspace/workspace/models"
-	"audit-poc/internal/userworkspace/workspace/payloads"
+	"audit-poc/internal/workspace/models"
+	"audit-poc/internal/workspace/payloads"
 	"context"
 	"encoding/json"
 	"errors"

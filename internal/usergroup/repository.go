@@ -1,9 +1,9 @@
-package workspace
+package usergroup
 
 import (
 	"audit-poc/internal/auditions"
-	"audit-poc/internal/userworkspace/workspace/models"
-	"audit-poc/internal/userworkspace/workspace/payloads"
+	"audit-poc/internal/usergroup/models"
+	"audit-poc/internal/usergroup/payloads"
 	"audit-poc/util"
 	"context"
 	"encoding/json"
@@ -12,10 +12,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func (main WorkspaceRepository) SaveWithContext(ctx context.Context, entity models.Workspace) error {
+func (main UserGroupRepository) SaveWithContext(ctx context.Context, entity models.UserGroup) error {
 	return main.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Model(&models.Workspace{}).Create(&entity).Error; err != nil {
+		if err := tx.Model(&models.UserGroup{}).Create(&entity).Error; err != nil {
 			logrus.Errorln("Save Workspace error:", err)
 			return err
 		}
@@ -45,10 +45,10 @@ func (main WorkspaceRepository) SaveWithContext(ctx context.Context, entity mode
 	})
 }
 
-func (main WorkspaceRepository) UpdateWithContext(ctx context.Context, entity models.Workspace, request payloads.Request, id uuid.UUID) (models.Workspace, error) {
+func (main UserGroupRepository) UpdateWithContext(ctx context.Context, entity models.UserGroup, request payloads.Request, id uuid.UUID) (models.UserGroup, error) {
 	return entity, main.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Model(&models.Workspace{}).Where("id", id).Update("name", request.Name).Scan(&entity).Error; err != nil {
+		if err := tx.Model(&models.UserGroup{}).Where("id", id).Update("name", request.Name).Scan(&entity).Error; err != nil {
 			logrus.Errorln("Update Workspace error:", err)
 			return err
 		}
@@ -78,10 +78,10 @@ func (main WorkspaceRepository) UpdateWithContext(ctx context.Context, entity mo
 	})
 }
 
-func (main WorkspaceRepository) DeleteWithContext(ctx context.Context, entity models.Workspace, id uuid.UUID)  error {
+func (main UserGroupRepository) DeleteWithContext(ctx context.Context, entity models.UserGroup, id uuid.UUID)  error {
 	return main.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Model(&models.Workspace{}).First(&entity, id).Delete(&entity).Error; err != nil {
+		if err := tx.Model(&models.UserGroup{}).First(&entity, id).Delete(&entity, id).Error; err != nil {
 			logrus.Errorln("Delete Workspace error:", err)
 			return err
 		}

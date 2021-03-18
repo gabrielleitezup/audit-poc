@@ -1,8 +1,8 @@
 package usergroup
 
 import (
-	"audit-poc/internal/userworkspace/usergroup/models"
-	"audit-poc/internal/userworkspace/usergroup/payloads"
+	"audit-poc/internal/usergroup/models"
+	"audit-poc/internal/usergroup/payloads"
 	"context"
 	"encoding/json"
 	"errors"

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"audit-poc/internal/circle"
 	"audit-poc/internal/configuration"
 	"audit-poc/internal/members"
+	"audit-poc/internal/usergroup"
 	"audit-poc/internal/userworkspace"
-	"audit-poc/internal/userworkspace/usergroup"
-	"audit-poc/internal/userworkspace/workspace"
+	"audit-poc/internal/workspace"
 	"audit-poc/web"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -37,12 +38,19 @@ func main() {
 	userGroupMain := usergroup.NewMain(db)
 	userWorkspaceMain := userworkspace.NewMain(db)
 	memberMain := members.NewMain(db)
-	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain)
+	circleMain := circle.NewMain(db)
+	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain, circleMain)
 
 	Start(r)
 }
 
-func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.ServiceMethods, userworkspace userworkspace.ServiceMethods, member members.ServiceMethods) *mux.Router {
+func CreateRouter(workspace workspace.ServiceMethods,
+	usergroup usergroup.ServiceMethods,
+	userworkspace userworkspace.ServiceMethods,
+	member members.ServiceMethods,
+	circle circle.ServiceMethods,
+) *mux.Router {
+
 	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
 	{
 		r.HandleFunc("/", web.HomeHandler).Methods("GET")
@@ -51,16 +59,21 @@ func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.Servic
 		r.HandleFunc("/workspaces/{workspaceId}", web.DeleteWorkspaceHandler(workspace)).Methods("DELETE")
 	}
 	{
+		r.HandleFunc("/workspaces/{workspaceId}/user-groups", web.SaveUserWorkspaceHandler(userworkspace)).Methods("POST")
+	}
+	{
 		r.HandleFunc("/user-groups", web.SaveUserGroupHandler(usergroup)).Methods("POST")
 		r.HandleFunc("/user-groups/{groupId}", web.UpdateUserGroupHandler(usergroup)).Methods("PATCH")
 		r.HandleFunc("/user-groups/{groupId}", web.DeleteUserGroupHandler(usergroup)).Methods("DELETE")
 	}
 	{
-		r.HandleFunc("/workspaces/{workspaceId}/user-groups", web.SaveUserWorkspaceHandler(userworkspace)).Methods("POST")
-	}
-	{
 		r.HandleFunc("/user-groups/{groupId}/members", web.SaveMemberHandler(member)).Methods("POST")
 	}
+	{
+		r.HandleFunc("/circles", web.SaveCircleHandler(circle)).Methods("POST")
+	}
+
+
 
 	return r
 }
