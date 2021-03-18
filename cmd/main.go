@@ -2,6 +2,7 @@ package main
 
 import (
 	"audit-poc/internal/configuration"
+	"audit-poc/internal/members"
 	"audit-poc/internal/userworkspace"
 	"audit-poc/internal/userworkspace/usergroup"
 	"audit-poc/internal/userworkspace/workspace"
@@ -35,12 +36,13 @@ func main() {
 	workspaceMain := workspace.NewMain(db)
 	userGroupMain := usergroup.NewMain(db)
 	userWorkspaceMain := userworkspace.NewMain(db)
-	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain)
+	memberMain := members.NewMain(db)
+	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain)
 
 	Start(r)
 }
 
-func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.ServiceMethods, userworkspace userworkspace.ServiceMethods) *mux.Router {
+func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.ServiceMethods, userworkspace userworkspace.ServiceMethods, member members.ServiceMethods) *mux.Router {
 	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
 	{
 		r.HandleFunc("/", web.HomeHandler).Methods("GET")
@@ -55,6 +57,9 @@ func CreateRouter(workspace workspace.ServiceMethods, usergroup usergroup.Servic
 	}
 	{
 		r.HandleFunc("/workspaces/{workspaceId}/user-groups", web.SaveUserWorkspaceHandler(userworkspace)).Methods("POST")
+	}
+	{
+		r.HandleFunc("/user-groups/{groupId}/members", web.SaveMemberHandler(member)).Methods("POST")
 	}
 
 	return r

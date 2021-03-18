@@ -1,6 +1,7 @@
 package members
 
 import (
+	"audit-poc/internal/members/models"
 	"audit-poc/internal/members/payloads"
 	"context"
 	"encoding/json"
@@ -31,7 +32,22 @@ func (main MemberRepository) ParseMember(entity io.ReadCloser) (payloads.Request
 }
 
 func (main MemberRepository) AssociateMemberToUserGroup(ctx context.Context, request payloads.Request, groupId uuid.UUID) (payloads.Response, error) {
-	panic("implement me")
+	entity := models.Member{
+		Id:          uuid.New(),
+		UserGroupId: groupId,
+		Username:    request.Username,
+	}
+
+	err := main.AssociateWithContext(ctx, entity)
+	if err != nil {
+		return payloads.Response{}, err
+	}
+
+	return payloads.Response{
+		Id:          entity.Id,
+		Username:    entity.Username,
+		UserGroupId: entity.UserGroupId,
+	}, nil
 }
 
 func NewMain(db *gorm.DB) ServiceMethods {

@@ -2,7 +2,7 @@ package members
 
 import (
 	"audit-poc/internal/auditions"
-	"audit-poc/internal/userworkspace/models"
+	"audit-poc/internal/members/models"
 	"audit-poc/util"
 	"context"
 	"encoding/json"
@@ -11,10 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func (main MemberRepository) AssociateWithContext(ctx context.Context, entity models.UserGroupWorkspace) error {
+func (main MemberRepository) AssociateWithContext(ctx context.Context, entity models.Member) error {
 	return main.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Model(&models.UserGroupWorkspace{}).Create(&entity).Error; err != nil {
+		if err := tx.Model(&models.Member{}).Create(&entity).Error; err != nil {
 			logrus.Errorln("Associate Member error:", err)
 			return err
 		}
