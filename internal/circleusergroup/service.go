@@ -1,4 +1,4 @@
-package circle
+package circleusergroup
 
 import (
 	"audit-poc/internal/circleusergroup/models"
@@ -13,7 +13,7 @@ import (
 
 type ServiceMethods interface {
 	ParseCircleUserGroup(entity io.ReadCloser) (payloads.Request, error)
-	AssociateCircleUserGroup(ctx context.Context, request payloads.Request) (payloads.Response, error)
+	AssociateCircleUserGroup(ctx context.Context, request payloads.Request, circleId uuid.UUID) (payloads.Response, error)
 }
 
 type CircleUserGroupRepository struct {
@@ -35,10 +35,10 @@ func (main CircleUserGroupRepository) ParseCircleUserGroup(entity io.ReadCloser)
 	return *newSubs, nil
 }
 
-func (main CircleUserGroupRepository) AssociateCircleUserGroup(ctx context.Context, request payloads.Request) (payloads.Response, error) {
+func (main CircleUserGroupRepository) AssociateCircleUserGroup(ctx context.Context, request payloads.Request, circleId uuid.UUID) (payloads.Response, error) {
 	entity := models.CircleUserGroup{
 		Id:          uuid.New(),
-		CircleId:    request.CircleId,
+		CircleId:    circleId,
 		UserGroupId: request.UserGroupId,
 		DeletedAt:   gorm.DeletedAt{},
 	}

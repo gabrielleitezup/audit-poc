@@ -2,7 +2,9 @@ package main
 
 import (
 	"audit-poc/internal/circle"
+	"audit-poc/internal/circleusergroup"
 	"audit-poc/internal/configuration"
+	"audit-poc/internal/deployment"
 	"audit-poc/internal/members"
 	"audit-poc/internal/usergroup"
 	"audit-poc/internal/userworkspace"
@@ -39,7 +41,9 @@ func main() {
 	userWorkspaceMain := userworkspace.NewMain(db)
 	memberMain := members.NewMain(db)
 	circleMain := circle.NewMain(db)
-	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain, circleMain)
+	circleUserGroupMain := circleusergroup.NewMain(db)
+	deploymentMain := deployment.NewMain(db)
+	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain, circleMain, circleUserGroupMain, deploymentMain)
 
 	Start(r)
 }
@@ -49,6 +53,8 @@ func CreateRouter(workspace workspace.ServiceMethods,
 	userworkspace userworkspace.ServiceMethods,
 	member members.ServiceMethods,
 	circle circle.ServiceMethods,
+	circleusergroup circleusergroup.ServiceMethods,
+	deployment deployment.ServiceMethods,
 ) *mux.Router {
 
 	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
@@ -71,9 +77,9 @@ func CreateRouter(workspace workspace.ServiceMethods,
 	}
 	{
 		r.HandleFunc("/circles", web.SaveCircleHandler(circle)).Methods("POST")
+		r.HandleFunc("/circles/{circleId}/segmentation", web.SaveCircleUserGroupHandler(circleusergroup)).Methods("PATCH")
+		r.HandleFunc("/circles/{circleId}/deployments", web.SaveDeploymentHandler(deployment)).Methods("POST")
 	}
-
-
 
 	return r
 }

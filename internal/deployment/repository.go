@@ -1,8 +1,8 @@
-package circleusergroup
+package deployment
 
 import (
 	"audit-poc/internal/auditions"
-	"audit-poc/internal/circleusergroup/models"
+	"audit-poc/internal/deployment/models"
 	"audit-poc/util"
 	"context"
 	"encoding/json"
@@ -11,11 +11,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func (main CircleUserGroupRepository) SaveWithContext(ctx context.Context, entity models.CircleUserGroup) error {
+func (main DeploymentRepository) SaveWithContext(ctx context.Context, entity models.Deployment) error {
 	return main.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 
-		if err := tx.Model(&models.CircleUserGroup{}).Create(&entity).Error; err != nil {
-			logrus.Errorln("Associate circle to User group error:", err)
+		if err := tx.Model(&models.Deployment{}).Create(&entity).Error; err != nil {
+			logrus.Errorln("Create Deploy error:", err)
 			return err
 		}
 
@@ -36,7 +36,7 @@ func (main CircleUserGroupRepository) SaveWithContext(ctx context.Context, entit
 		}
 
 		if err := tx.Model(&auditions.Audition{}).Create(&audit).Error; err != nil {
-			logrus.Errorln("Associate circle to user group audit error:", err)
+			logrus.Errorln("Create Deploy audit error:", err)
 			return err
 		}
 

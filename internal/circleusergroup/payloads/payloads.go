@@ -5,9 +5,8 @@ import (
 )
 
 type Request struct {
-	Name        string          `json:"name"`
-	CircleId    uuid.UUID      `json:"circleId"`
-	UserGroupId uuid.UUID      `json:"userGroupId"`
+	Name        string    `json:"name"`
+	UserGroupId uuid.UUID `json:"userGroupId"`
 }
 
 type Response struct {
