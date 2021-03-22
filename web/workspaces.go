@@ -9,11 +9,6 @@ import (
 	"net/http"
 )
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(":)"))
-}
-
 func SaveWorkspaceHandler(methods workspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -34,7 +29,6 @@ func SaveWorkspaceHandler(methods workspace.ServiceMethods) func(w http.Response
 		restutil.NewResponse(w, http.StatusCreated, response)
 	}
 }
-
 
 func UpdateWorkspaceHandler(methods workspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -63,8 +57,6 @@ func UpdateWorkspaceHandler(methods workspace.ServiceMethods) func(w http.Respon
 		restutil.NewResponse(w, http.StatusOK, response)
 	}
 }
-
-
 
 func DeleteWorkspaceHandler(methods workspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
