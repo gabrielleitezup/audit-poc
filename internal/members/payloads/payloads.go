@@ -9,5 +9,5 @@ type Request struct {
 type Response struct {
 	Id          uuid.UUID `json:"id"`
 	Username    string    `json:"username"`
-	UserGroupId uuid.UUID `json:"user_group_id"`
+	UserGroupId uuid.UUID `json:"userGroupId"`
 }

@@ -5,7 +5,6 @@ import (
 )
 
 type Request struct {
-	Name        string    `json:"name"`
 	UserGroupId uuid.UUID `json:"userGroupId"`
 }
 
