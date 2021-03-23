@@ -1,7 +1,7 @@
 package web
 
 import (
-	"audit-poc/internal/userworkspace"
+	"audit-poc/internal/circleusergroup"
 	"audit-poc/util"
 	"audit-poc/web/restutil"
 	"github.com/google/uuid"
@@ -9,25 +9,25 @@ import (
 	"net/http"
 )
 
-func SaveUserWorkspaceHandler(methods userworkspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
+func SaveCircleUserGroupHandler(methods circleusergroup.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := util.FillContext(r, "gabrielleite")
 
 		params := mux.Vars(r)
-		workspaceId, err := uuid.Parse(params["workspaceId"])
+		circleId, err := uuid.Parse(params["circleId"])
 		if err != nil {
 			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		request, err := methods.ParseUserWorkspace(r.Body)
+		request, err := methods.ParseCircleUserGroup(r.Body)
 		if err != nil {
 			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		response, err := methods.AssociateUserGroupToWorkspace(ctx, request, workspaceId)
+		response, err := methods.AssociateCircleUserGroup(ctx, request, circleId)
 		if err != nil {
 			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return

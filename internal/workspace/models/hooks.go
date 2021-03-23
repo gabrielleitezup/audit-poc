@@ -1,29 +1,30 @@
-package usergroup
+package models
 
 import (
 	"audit-poc/internal/auditions"
+	"audit-poc/util"
 	"encoding/json"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-func (u *UserGroup) AfterCreate(tx *gorm.DB) error {
+func (w *Workspace) AfterCreate(tx *gorm.DB) error {
 	ctx := tx.Statement.Context
 
-	cs, err := json.Marshal(u)
+	cs, err := json.Marshal(w)
 	if err != nil {
 		return err
 	}
 
 	audit := auditions.Audition{
 		Id:           uuid.New(),
-		Username:     ctx.Value("jwt").(string),
+		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
 		Operation:    "INSERT",
-		EntityId:     u.Id.String(),
+		EntityId:     w.Id.String(),
 		CurrentState: cs,
-		UserIpAddr:   ctx.Value("user-ip").(string),
-		UserAgent:    ctx.Value("user-agent").(string),
+		UserIpAddr:   ctx.Value(util.UserIpContextKey).(string),
+		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
 	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)
@@ -34,23 +35,23 @@ func (u *UserGroup) AfterCreate(tx *gorm.DB) error {
 	return nil
 }
 
-func (u *UserGroup) AfterUpdate(tx *gorm.DB) error {
+func (w *Workspace) AfterUpdate(tx *gorm.DB) error {
 	ctx := tx.Statement.Context
 
-	cs, err := json.Marshal(u)
+	cs, err := json.Marshal(w)
 	if err != nil {
 		return err
 	}
 
 	audit := auditions.Audition{
 		Id:           uuid.New(),
-		Username:     ctx.Value("jwt").(string),
+		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
 		Operation:    "UPDATE",
-		EntityId:     u.Id.String(),
+		EntityId:     w.Id.String(),
 		CurrentState: cs,
-		UserIpAddr:   ctx.Value("user-ip").(string),
-		UserAgent:    ctx.Value("user-agent").(string),
+		UserIpAddr:   ctx.Value(util.UserIpContextKey).(string),
+		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
 	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)
@@ -61,24 +62,23 @@ func (u *UserGroup) AfterUpdate(tx *gorm.DB) error {
 	return nil
 }
 
-func (u *UserGroup) AfterDelete(tx *gorm.DB) error {
+func (w *Workspace) AfterDelete(tx *gorm.DB) error {
 	ctx := tx.Statement.Context
 
-	cs, err := json.Marshal(u)
+	cs, err := json.Marshal(w)
 	if err != nil {
 		return err
 	}
 
-
 	audit := auditions.Audition{
 		Id:           uuid.New(),
-		Username:     ctx.Value("jwt").(string),
+		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
 		Operation:    "DELETE",
-		EntityId:     u.Id.String(),
+		EntityId:     w.Id.String(),
 		CurrentState: cs,
-		UserIpAddr:   ctx.Value("user-ip").(string),
-		UserAgent:    ctx.Value("user-agent").(string),
+		UserIpAddr:   ctx.Value(util.UserIpContextKey).(string),
+		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
 	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)

@@ -21,10 +21,12 @@ CREATE TABLE AUDITIONS
 
 CREATE TABLE CIRCLES
 (
-    id         varchar(36) PRIMARY KEY,
-    name       varchar(256) NOT NULL,
-    rules      jsonb        NOT NULL,
-    deleted_at timestamp
+    id           varchar(36) PRIMARY KEY,
+    name         varchar(256) NOT NULL,
+    rules        jsonb        NOT NULL,
+    workspace_id varchar(36)  NOT NULL,
+    deleted_at   timestamp,
+    CONSTRAINT fk_workspace_id_circle FOREIGN KEY (workspace_id) REFERENCES WORKSPACES (ID)
 );
 
 CREATE TABLE COMPONENTS
@@ -62,6 +64,26 @@ CREATE TABLE USER_GROUP_WORKSPACES
     CONSTRAINT fk_workspace_group_user_group FOREIGN KEY (workspace_id) REFERENCES WORKSPACES (ID)
 );
 
+CREATE TABLE DEPLOYMENTS
+(
+    id         varchar(36) PRIMARY KEY,
+    name       varchar(255) NOT NULL,
+    version    varchar(255) NOT NULL,
+    circle_id  varchar(36)  NOT NULL,
+    deleted_at timestamp,
+    CONSTRAINT fk_circle_deployment FOREIGN KEY (circle_id) REFERENCES CIRCLES (ID)
+);
+
+CREATE TABLE CIRCLE_USER_GROUPS
+(
+    id            varchar(36) PRIMARY KEY,
+    user_group_id varchar(36) NOT NULL,
+    circle_id     varchar(36) NOT NULL,
+    deleted_at    timestamp,
+    CONSTRAINT fk_user_group_circle FOREIGN KEY (user_group_id) REFERENCES USER_GROUPS (ID),
+    CONSTRAINT fk_circle_user_group FOREIGN KEY (circle_id) REFERENCES CIRCLES (ID)
+);
+
 CREATE TABLE BUTLER_CONFIGURATIONS
 (
     id           varchar(36) PRIMARY KEY,
@@ -95,4 +117,3 @@ CREATE TABLE ACTIONS
     deleted_at    timestamp,
     CONSTRAINT fk_workspace_id_action FOREIGN KEY (workspace_id) REFERENCES WORKSPACES (ID)
 );
-

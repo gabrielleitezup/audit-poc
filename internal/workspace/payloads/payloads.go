@@ -1,4 +1,4 @@
-package workspace
+package payloads
 
 import "github.com/google/uuid"
 

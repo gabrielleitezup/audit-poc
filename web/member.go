@@ -1,7 +1,7 @@
 package web
 
 import (
-	"audit-poc/internal/userworkspace"
+	"audit-poc/internal/members"
 	"audit-poc/util"
 	"audit-poc/web/restutil"
 	"github.com/google/uuid"
@@ -9,25 +9,25 @@ import (
 	"net/http"
 )
 
-func SaveUserWorkspaceHandler(methods userworkspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
+func SaveMemberHandler(methods members.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		params := mux.Vars(r)
+		groupId, err := uuid.Parse(params["groupId"])
+		if err != nil {
+			restutil.NewResponse(w, http.StatusInternalServerError, err)
+			return
+		}
 
 		ctx := util.FillContext(r, "gabrielleite")
 
-		params := mux.Vars(r)
-		workspaceId, err := uuid.Parse(params["workspaceId"])
+		request, err := methods.ParseMember(r.Body)
 		if err != nil {
 			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
 		}
 
-		request, err := methods.ParseUserWorkspace(r.Body)
-		if err != nil {
-			restutil.NewResponse(w, http.StatusInternalServerError, err)
-			return
-		}
-
-		response, err := methods.AssociateUserGroupToWorkspace(ctx, request, workspaceId)
+		response, err := methods.AssociateMemberToUserGroup(ctx, request, groupId)
 		if err != nil {
 			restutil.NewResponse(w, http.StatusInternalServerError, err)
 			return
