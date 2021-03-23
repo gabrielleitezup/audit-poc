@@ -35,7 +35,6 @@ func SaveWorkspaceHandler(methods workspace.ServiceMethods) func(w http.Response
 	}
 }
 
-
 func UpdateWorkspaceHandler(methods workspace.ServiceMethods) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 

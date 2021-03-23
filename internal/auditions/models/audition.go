@@ -1,4 +1,4 @@
-package auditions
+package models
 
 import (
 	"github.com/google/uuid"
@@ -14,5 +14,5 @@ type Audition struct {
 	CurrentState []byte     `json:"current_state" gorm:"type:jsonb"`
 	UserIpAddr   string     `json:"user_ip_addr"`
 	UserAgent    string     `json:"user_agent"`
-	CreatedAt    *time.Time `json:"-"`
+	CreatedAt    *time.Time `json:"createdAt"`
 }

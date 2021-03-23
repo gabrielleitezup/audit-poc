@@ -1,6 +1,7 @@
 package main
 
 import (
+	"audit-poc/internal/auditions"
 	"audit-poc/internal/circle"
 	"audit-poc/internal/circleusergroup"
 	"audit-poc/internal/configuration"
@@ -43,7 +44,8 @@ func main() {
 	circleMain := circle.NewMain(db)
 	circleUserGroupMain := circleusergroup.NewMain(db)
 	deploymentMain := deployment.NewMain(db)
-	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain, circleMain, circleUserGroupMain, deploymentMain)
+	auditionMain := auditions.NewMain(db)
+	r := CreateRouter(workspaceMain, userGroupMain, userWorkspaceMain, memberMain, circleMain, circleUserGroupMain, deploymentMain, auditionMain)
 
 	Start(r)
 }
@@ -55,6 +57,7 @@ func CreateRouter(workspace workspace.ServiceMethods,
 	circle circle.ServiceMethods,
 	circleusergroup circleusergroup.ServiceMethods,
 	deployment deployment.ServiceMethods,
+	audition auditions.ServiceMethods,
 ) *mux.Router {
 
 	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
@@ -79,6 +82,9 @@ func CreateRouter(workspace workspace.ServiceMethods,
 		r.HandleFunc("/circles", web.SaveCircleHandler(circle)).Methods("POST")
 		r.HandleFunc("/circles/{circleId}/segmentation", web.SaveCircleUserGroupHandler(circleusergroup)).Methods("PATCH")
 		r.HandleFunc("/circles/{circleId}/deployments", web.SaveDeploymentHandler(deployment)).Methods("POST")
+	}
+	{
+		r.HandleFunc("/history", web.HistoryHandler(audition)).Methods("GET")
 	}
 
 	return r

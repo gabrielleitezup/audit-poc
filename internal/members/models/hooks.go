@@ -1,7 +1,7 @@
 package models
 
 import (
-	"audit-poc/internal/auditions"
+	"audit-poc/internal/auditions/models"
 	"audit-poc/util"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ func (m *Member) AfterCreate(tx *gorm.DB) error {
 		return err
 	}
 
-	audit := auditions.Audition{
+	audit := models.Audition{
 		Id:           uuid.New(),
 		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
@@ -27,7 +27,7 @@ func (m *Member) AfterCreate(tx *gorm.DB) error {
 		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
-	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)
+	svAudit := tx.Model(&models.Audition{}).Create(&audit)
 	if svAudit.Error != nil {
 		return svAudit.Error
 	}
@@ -43,7 +43,7 @@ func (m *Member) AfterUpdate(tx *gorm.DB) error {
 		return err
 	}
 
-	audit := auditions.Audition{
+	audit := models.Audition{
 		Id:           uuid.New(),
 		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
@@ -54,7 +54,7 @@ func (m *Member) AfterUpdate(tx *gorm.DB) error {
 		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
-	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)
+	svAudit := tx.Model(&models.Audition{}).Create(&audit)
 	if svAudit.Error != nil {
 		return svAudit.Error
 	}
@@ -70,7 +70,7 @@ func (m *Member) AfterDelete(tx *gorm.DB) error {
 		return err
 	}
 
-	audit := auditions.Audition{
+	audit := models.Audition{
 		Id:           uuid.New(),
 		Username:     ctx.Value(util.AuthContextKey).(string),
 		TableName:    tx.Statement.Table,
@@ -81,7 +81,7 @@ func (m *Member) AfterDelete(tx *gorm.DB) error {
 		UserAgent:    ctx.Value(util.UserAgentContextKey).(string),
 	}
 
-	svAudit := tx.Model(&auditions.Audition{}).Create(&audit)
+	svAudit := tx.Model(&models.Audition{}).Create(&audit)
 	if svAudit.Error != nil {
 		return svAudit.Error
 	}
