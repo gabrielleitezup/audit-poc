@@ -18,6 +18,8 @@ func HistoryHandler(methods auditions.ServiceMethods) func(w http.ResponseWriter
 		GetParam(r, params, "username", "username")
 		GetParam(r, params, "table_name", "entity")
 		GetParam(r, params, "operation", "operation")
+		GetParam(r, params, "startedAt", "startedAt")
+		GetParam(r, params, "endedAt", "endedAt")
 
 		response, err := methods.HistoryList(ctx, params)
 		if err != nil {

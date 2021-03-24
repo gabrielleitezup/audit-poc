@@ -22,9 +22,21 @@ func NewMain(db *gorm.DB) ServiceMethods {
 func (main AuditionRepository) HistoryList(ctx context.Context, params map[string]interface{}) ([]models.Audition, error) {
 	var entity []models.Audition
 
-	res := main.db.WithContext(ctx).Model(&models.Audition{}).Where(params).Find(&entity)
-	if res.Error != nil {
-		return []models.Audition{}, res.Error
+	startedAt, okS := params["startedAt"]
+	endedAt, okE := params["endedAt"]
+
+	if okS == true && okE == true {
+		delete(params, "startedAt")
+		delete(params, "endedAt")
+		res := main.db.WithContext(ctx).Model(&models.Audition{}).Where(params).Where("created_at BETWEEN ? AND ?", startedAt, endedAt).Find(&entity)
+		if res.Error != nil {
+			return []models.Audition{}, res.Error
+		}
+	} else {
+		res := main.db.WithContext(ctx).Model(&models.Audition{}).Where(params).Find(&entity)
+		if res.Error != nil {
+			return []models.Audition{}, res.Error
+		}
 	}
 
 	for key, value := range params {
@@ -33,5 +45,3 @@ func (main AuditionRepository) HistoryList(ctx context.Context, params map[strin
 
 	return entity, nil
 }
-
-
